@@ -1,44 +1,51 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useShop } from "../context/ShopContext";
-import { Button } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
-const ITEMS_PER_PAGE = 8;
+import { Link } from "react-router-dom";
+import { useRef } from "react";
 
 const FeaturedProducts = () => {
-  const { products, addToCart } = useShop();
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const indexOfLastProduct = currentPage * ITEMS_PER_PAGE;
-  const indexOfFirstProduct = indexOfLastProduct - ITEMS_PER_PAGE;
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const { products } = useShop();
+  const scrollContainerRef = useRef(null);
 
   return (
-    <section className="container mx-auto px-4 py-16">
-      <h2 className="text-3xl font-bold mb-8 text-center">Featured Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {currentProducts.map((product) => (
+    <section className="container mx-auto px-4 md:px-24 py-16">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-base tracking-wide">Featured Products</h2>
+        <div className="flex gap-2 items-center justify-center">
+          <Link className="text-sm hover:underline">Shop all</Link>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="size-5"
+          >
+            <path
+              fillRule="evenodd"
+              d="M2 10a.75.75 0 0 1 .75-.75h12.59l-2.1-1.95a.75.75 0 1 1 1.02-1.1l3.5 3.25a.75.75 0 0 1 0 1.1l-3.5 3.25a.75.75 0 1 1-1.02-1.1l2.1-1.95H2.75A.75.75 0 0 1 2 10Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Scrollable container */}
+      <div
+        ref={scrollContainerRef}
+        className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        {products.map((product) => (
           <Link
             to={`/product/${product._id}`}
             key={product._id}
-            className="group block"
+            className="flex-none w-full md:w-[calc((100%-3rem)/3)] snap-start group"
           >
             <div className="relative aspect-[3/4] mb-4 overflow-hidden">
               <img
-                src={product.images[0] || "https://via.placeholder.com/300x400"}
+                src={product.images[0] || "/api/placeholder/300/400"}
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
@@ -50,34 +57,6 @@ const FeaturedProducts = () => {
           </Link>
         ))}
       </div>
-      <Pagination className="mt-12">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            />
-          </PaginationItem>
-          {[...Array(totalPages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink
-                onClick={() => setCurrentPage(index + 1)}
-                isActive={currentPage === index + 1}
-              >
-                {index + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
     </section>
   );
 };
