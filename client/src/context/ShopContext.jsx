@@ -33,7 +33,7 @@ export const ShopProvider = ({ children }) => {
   });
   const [users, setUsers] = useState([]);
 
-  const baseUrl = "https://ecom-1-9xsu.onrender.com";
+  const baseUrl = "https://ecom-1-9xsu.onrender.com/api";
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
