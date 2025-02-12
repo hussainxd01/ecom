@@ -1,12 +1,11 @@
 import React, { useState } from "react";
+import image1 from "../assets/images/IMG_1.png";
+import image2 from "../assets/images/IMG_2.png";
+import image3 from "../assets/images/IMG_3.png";
 
 const ImageCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = [
-    "https://www.snitch.com/_next/image?url=https%3A%2F%2Fd2d5n4ft74bagm.cloudfront.net%2Fmedia%2Fbanners%2Fd12642b9-b1be-4eb1-b185-259f6ade3117%2F1737111216.jpeg&w=1920&q=50",
-    "https://www.snitch.com/_next/image?url=https%3A%2F%2Fd2d5n4ft74bagm.cloudfront.net%2Fmedia%2Fbanners%2F30b86c8b-96a9-48b0-b171-6fcadbce3700%2F1737111183.jpeg&w=1920&q=50",
-    "https://www.snitch.com/_next/image?url=https%3A%2F%2Fd2d5n4ft74bagm.cloudfront.net%2Fmedia%2Fbanners%2F8ce7dff9-3af6-459f-b22b-17723c0c4cbd%2F1737477945.jpeg&w=1920&q=50",
-  ];
+  const images = [image1, image2, image3];
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
