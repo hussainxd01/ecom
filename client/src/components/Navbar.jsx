@@ -298,19 +298,16 @@ const Navbar = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  // State management
   const [state, setState] = useState({
     open: false,
     searchBar: false,
     searchQuery: "",
     searchResults: [],
     userDropdown: false,
-    mobileNavbar: false,
-    mobileUserNavbar: false,
+    isSidebarOpen: false,
     isAdmin: false,
     showManageSidebar: false,
   });
-
   // Update isAdmin status when user changes
   useEffect(() => {
     setState((prev) => ({
@@ -378,11 +375,9 @@ const Navbar = () => {
         {/* Mobile Menu Toggle */}
         <div
           className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full cursor-pointer sm:hidden"
-          onClick={() =>
-            setState((prev) => ({ ...prev, mobileNavbar: !prev.mobileNavbar }))
-          }
+          onClick={() => setState((prev) => ({ ...prev, isSidebarOpen: true }))}
         >
-          {state.mobileNavbar ? <CloseIcon /> : <MenuIcon />}
+          <MenuIcon />
         </div>
 
         {/* Logo */}
@@ -395,7 +390,8 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation (keep the same) */}
+
         <div className="text-gray-600 flex-1 ml-60 h-full sm:flex items-center hidden text-xs tracking-widest uppercase font-light">
           {NAVIGATION_CONFIG.main.map((item) => (
             <NavLink
@@ -443,18 +439,13 @@ const Navbar = () => {
           </button>
           <button
             className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
-            onClick={() =>
-              setState((prev) => ({
-                ...prev,
-                mobileUserNavbar: !prev.mobileUserNavbar,
-              }))
-            }
+            onClick={() => navigate("/cart")}
           >
-            {state.mobileUserNavbar ? <CloseIcon /> : <UserIcon />}
+            <CartIcon />
           </button>
         </div>
 
-        {/* Desktop Icons */}
+        {/* Desktop Icons (keep the same) */}
         <div className="sm:flex hidden gap-3 h-full items-center justify-center">
           <button
             className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
@@ -485,48 +476,78 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Navigation Menu */}
-      {state.mobileNavbar && (
-        <div className="px-4 flex flex-col">
-          {NAVIGATION_CONFIG.main.map((item) => (
-            <NavLink
-              to={item.to}
-              key={item.name}
-              className="py-4 uppercase text-sm tracking-widest border-b border-gray-100/100 font-medium"
+      {/* Mobile Sidebar */}
+      <div
+        className={`fixed inset-0 z-50 transition-all duration-300 ${
+          state.isSidebarOpen ? "visible" : "invisible"
+        }`}
+      >
+        {/* Overlay */}
+        <div
+          className={`fixed inset-0 bg-black/50 transition-opacity ${
+            state.isSidebarOpen ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={() =>
+            setState((prev) => ({ ...prev, isSidebarOpen: false }))
+          }
+        />
+
+        {/* Sidebar Content */}
+        <div
+          className={`absolute left-0 top-0 h-full w-80 max-w-full bg-white shadow-xl transition-transform duration-300 ${
+            state.isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="p-4 border-b border-gray-100">
+            <button
+              className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
               onClick={() =>
-                setState((prev) => ({ ...prev, mobileNavbar: false }))
+                setState((prev) => ({ ...prev, isSidebarOpen: false }))
               }
             >
-              {item.name}
-            </NavLink>
-          ))}
-        </div>
-      )}
+              <CloseIcon />
+            </button>
+          </div>
 
-      {/* Mobile User Navigation */}
-      {state.mobileUserNavbar && (
-        <div className="px-4 flex flex-col">
-          {NAVIGATION_CONFIG.user
-            .filter((item) => !item.adminOnly || state.isAdmin)
-            .map((item) => (
-              <NavLink
-                to={item.to}
-                key={item.name}
-                className="py-4 uppercase text-sm tracking-widest border-b border-gray-100/100 font-medium"
-                onClick={() => {
-                  if (item.name === "Manage Site") {
-                    setState((prev) => ({ ...prev, showManageSidebar: true }));
+          <div className="overflow-y-auto h-[calc(100%-60px)]">
+            {/* Main Navigation */}
+            <nav className="px-4 py-6">
+              {NAVIGATION_CONFIG.main.map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.to}
+                  className="block py-3 px-4 text-sm uppercase tracking-widest text-gray-600 hover:bg-gray-100 rounded-lg"
+                  onClick={() =>
+                    setState((prev) => ({ ...prev, isSidebarOpen: false }))
                   }
-                  if (item.name === "Logout") {
-                    handleLogout();
-                  }
-                }}
-              >
-                {item.name}
-              </NavLink>
-            ))}
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* User Navigation */}
+            <nav className="px-4 py-6 border-t border-gray-100">
+              {NAVIGATION_CONFIG.user
+                .filter((item) => !item.adminOnly || state.isAdmin)
+                .map((item) => (
+                  <NavLink
+                    key={item.name}
+                    to={item.to}
+                    className="flex items-center gap-3 py-3 px-4 text-sm uppercase tracking-widest text-gray-600 hover:bg-gray-100 rounded-lg"
+                    onClick={() => {
+                      if (item.name === "Logout") handleLogout();
+                      setState((prev) => ({ ...prev, isSidebarOpen: false }));
+                    }}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    {item.name}
+                  </NavLink>
+                ))}
+            </nav>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Shop Dropdown */}
       <ShopDropdown

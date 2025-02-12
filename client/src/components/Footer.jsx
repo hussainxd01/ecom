@@ -52,7 +52,7 @@ const Footer = () => {
               </h3>
               <nav className="flex flex-col space-y-2">
                 <Link
-                  to="/term-condition"
+                  to="/terms-and-conditions"
                   className="text-sm uppercase hover:underline"
                 >
                   Terms & Conditions

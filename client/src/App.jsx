@@ -15,6 +15,8 @@ import OrderConfirmation from "./components/OrderConfirmation";
 import MyAccount from "./components/MyAccount";
 import CategoryPage from "./components/CategoryPage";
 import OurStory from "./components/OurStory";
+import TermsAndConditions from "./components/TermsAndCondition";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 const App = () => {
   return (
     <section className="font-sans">
@@ -33,6 +35,8 @@ const App = () => {
         <Route path="/account" element={<MyAccount />} />
         <Route path="/our-story" element={<OurStory />} />
         <Route path="/category/:category" element={<CategoryPage />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
       <Toaster />
     </section>
