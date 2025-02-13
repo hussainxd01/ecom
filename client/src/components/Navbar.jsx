@@ -4,6 +4,8 @@ import MenSectionImage from "../assets/images/mens.jpg";
 import WomenSectionImage from "../assets/images/women.jpg";
 import { useShop } from "../context/ShopContext";
 import { useToast } from "../hooks/use-toast";
+import SearchSidebar from "./SearchSidebar";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 // Navigation data configuration
 const NAVIGATION_CONFIG = {
@@ -300,13 +302,13 @@ const Navbar = () => {
 
   const [state, setState] = useState({
     open: false,
-    searchBar: false,
     searchQuery: "",
     searchResults: [],
     userDropdown: false,
     isSidebarOpen: false,
     isAdmin: false,
     showManageSidebar: false,
+    isSearchOpen: false,
   });
   // Update isAdmin status when user changes
   useEffect(() => {
@@ -432,8 +434,10 @@ const Navbar = () => {
         {/* Mobile Icons */}
         <div className="flex gap-2 sm:hidden">
           <button
-            className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
-            onClick={() => setState((prev) => ({ ...prev, searchBar: true }))}
+            className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full sm:hidden"
+            onClick={() =>
+              setState((prev) => ({ ...prev, isSearchOpen: true }))
+            }
           >
             <SearchIcon />
           </button>
@@ -449,7 +453,9 @@ const Navbar = () => {
         <div className="sm:flex hidden gap-3 h-full items-center justify-center">
           <button
             className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
-            onClick={() => setState((prev) => ({ ...prev, searchBar: true }))}
+            onClick={() =>
+              setState((prev) => ({ ...prev, isSearchOpen: true }))
+            }
           >
             <SearchIcon />
           </button>
@@ -475,7 +481,6 @@ const Navbar = () => {
           </button>
         </div>
       </nav>
-
       {/* Mobile Sidebar */}
       <div
         className={`fixed inset-0 z-50 transition-all duration-300 ${
@@ -548,7 +553,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
       {/* Shop Dropdown */}
       <ShopDropdown
         open={state.open}
@@ -556,7 +560,6 @@ const Navbar = () => {
         onMouseEnter={() => setState((prev) => ({ ...prev, open: true }))}
         onMouseLeave={() => setState((prev) => ({ ...prev, open: false }))}
       />
-
       {/* User Dropdown */}
       {state.userDropdown && user && (
         <div
@@ -602,48 +605,25 @@ const Navbar = () => {
           </ul>
         </div>
       )}
-
       {/* Search Bar */}
-      {state.searchBar && (
-        <div className="absolute top-0 inset-x-0 bg-white w-full transform transition-all duration-300 ease-in-out uppercase z-50">
-          <div className="sm:px-10 px-6 sm:h-24 h-20 border-b border-gray-100/100 flex items-center justify-center gap-3">
-            <div className="relative w-3/4">
-              <input
-                type="search"
-                name="search"
-                id="search"
-                value={state.searchQuery}
-                onChange={(e) =>
-                  setState((prev) => ({ ...prev, searchQuery: e.target.value }))
-                }
-                className="border py-3 rounded-full px-8 w-full focus:border-black outline-none text-xs sm:text-base tracking-widest uppercase"
-                placeholder="Try searching T-shirt for Men"
-              />
-              <div className="size-8 flex items-center justify-center hover:bg-gray-100 rounded-full cursor-pointer absolute top-1/2 right-2 -translate-y-1/2">
-                <SearchIcon />
-              </div>
 
-              <SearchResults
-                results={state.searchResults}
-                onItemClick={handleSearchClick}
-              />
-            </div>
-
-            <button
-              className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
-              onClick={() =>
-                setState((prev) => ({
-                  ...prev,
-                  searchBar: false,
-                  searchQuery: "",
-                }))
-              }
-            >
-              <CloseIcon />
-            </button>
-          </div>
-        </div>
-      )}
+      <Sheet
+        open={state.isSearchOpen}
+        onOpenChange={(open) =>
+          setState((prev) => ({ ...prev, isSearchOpen: open }))
+        }
+      >
+        <SheetContent side="right" className="w-full sm:w-[400px] p-0">
+          <SearchSidebar
+            searchQuery={state.searchQuery}
+            searchResults={state.searchResults}
+            onSearchChange={(value) =>
+              setState((prev) => ({ ...prev, searchQuery: value }))
+            }
+            onItemClick={handleSearchClick}
+          />
+        </SheetContent>
+      </Sheet>
     </section>
   );
 };
