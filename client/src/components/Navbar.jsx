@@ -27,6 +27,7 @@ const NAVIGATION_CONFIG = {
       adminOnly: true,
     },
     { name: "Logout", to: "/logout", icon: LogoutIcon },
+    { name: "Login", to: "/auth", icon: LogoutIcon },
   ],
   shop: {
     featured: {
@@ -312,7 +313,27 @@ const Navbar = () => {
     isAdmin: false,
     showManageSidebar: false,
     isSearchOpen: false,
+    isLoggedIn: false,
   });
+
+  if (user !== null) {
+    state.isLoggedIn = true;
+  }
+
+  if (state.isSidebarOpen === true) {
+    state.isSearchOpen = false;
+  }
+
+  const getMobileNavigationItems = () => {
+    if (!user) {
+      // Show only Login when user is not logged in
+      return NAVIGATION_CONFIG.user.filter((item) => item.name === "Login");
+    }
+    // Show all items except Login when user is logged in
+    return NAVIGATION_CONFIG.user.filter(
+      (item) => item.name !== "Login" && (!item.adminOnly || state.isAdmin)
+    );
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -544,22 +565,20 @@ const Navbar = () => {
 
             {/* User Navigation */}
             <nav className="px-4 py-6 border-t border-gray-100">
-              {NAVIGATION_CONFIG.user
-                .filter((item) => !item.adminOnly || state.isAdmin)
-                .map((item) => (
-                  <NavLink
-                    key={item.name}
-                    to={item.to}
-                    className="flex items-center gap-3 py-3 px-4 text-sm uppercase tracking-widest text-gray-600 hover:bg-gray-100 rounded-lg"
-                    onClick={() => {
-                      if (item.name === "Logout") handleLogout();
-                      setState((prev) => ({ ...prev, isSidebarOpen: false }));
-                    }}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    {item.name}
-                  </NavLink>
-                ))}
+              {getMobileNavigationItems().map((item) => (
+                <NavLink
+                  key={item.name}
+                  to={item.to}
+                  className="flex items-center gap-3 py-3 px-4 text-sm uppercase tracking-widest text-gray-600 hover:bg-gray-100 rounded-lg"
+                  onClick={() => {
+                    if (item.name === "Logout") handleLogout();
+                    setState((prev) => ({ ...prev, isSidebarOpen: false }));
+                  }}
+                >
+                  <item.icon className="w-5 h-5" />
+                  {item.name}
+                </NavLink>
+              ))}
             </nav>
           </div>
         </div>
@@ -583,36 +602,34 @@ const Navbar = () => {
           }
         >
           <ul className="text-xs text-gray-700 uppercase tracking-widest font-light">
-            {NAVIGATION_CONFIG.user
-              .filter((item) => !item.adminOnly || state.isAdmin)
-              .map((item) => (
-                <li key={item.name}>
-                  {item.name === "Logout" ? (
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 uppercase flex gap-2 items-center font-light"
-                    >
-                      <item.icon />
-                      {item.name}
-                    </button>
-                  ) : (
-                    <Link
-                      to={item.to}
-                      className="px-4 py-2 hover:bg-gray-100 flex gap-2 items-center"
-                      onClick={() =>
-                        item.name === "Manage Site" &&
-                        setState((prev) => ({
-                          ...prev,
-                          showManageSidebar: true,
-                        }))
-                      }
-                    >
-                      <item.icon />
-                      {item.name}
-                    </Link>
-                  )}
-                </li>
-              ))}
+            {getMobileNavigationItems().map((item) => (
+              <li key={item.name}>
+                {item.name === "Logout" ? (
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 uppercase flex gap-2 items-center font-light"
+                  >
+                    <item.icon />
+                    {item.name}
+                  </button>
+                ) : (
+                  <Link
+                    to={item.to}
+                    className="px-4 py-2 hover:bg-gray-100 flex gap-2 items-center"
+                    onClick={() =>
+                      item.name === "Manage Site" &&
+                      setState((prev) => ({
+                        ...prev,
+                        showManageSidebar: true,
+                      }))
+                    }
+                  >
+                    <item.icon />
+                    {item.name}
+                  </Link>
+                )}
+              </li>
+            ))}
           </ul>
         </div>
       )}

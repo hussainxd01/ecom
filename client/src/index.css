@@ -74,9 +74,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 
-/* Add this to your global CSS */
 @media (max-width: 640px) {
   [data-radix-sheet-content] {
     width: 100vw !important;
@@ -84,6 +84,6 @@ body {
   }
 }
 
-/* * {
+* {
   border: 1px solid red;
-} */
+}
