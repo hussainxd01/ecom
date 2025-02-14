@@ -8,29 +8,35 @@ const SearchSidebar = ({
   searchResults,
   onSearchChange,
   onItemClick,
+  onClose,
 }) => {
   const trendingTags = ["Shirt", "Dress", "Black"];
 
   return (
-    <div className="flex flex-col h-full w-[580px] bg-white">
-      {/* Search Header */}
-      <div className="px-6 py-4 flex items-center justify-between border-b">
+    <div className="flex flex-col h-full w-full max-w-full bg-white overflow-hidden">
+      {/* Add close button for desktop */}
+      <div className="sm:px-6 px-2 py-4 flex items-center justify-between border-b">
         <h2 className="text-lg font-medium">Search</h2>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
-          <X className="h-4 w-4" />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="rounded-full p-2 hover:bg-gray-100"
+        >
+          <X className="h-5 w-5" />
         </Button>
       </div>
 
       {/* Content Area */}
       <div className="flex-1 overflow-auto">
         {/* Search Input */}
-        <div className="px-6 py-4">
+        <div className="px-2 sm:px-6 py-4">
           <Input
             type="search"
             placeholder="Search"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full h-10 bg-gray-50 border-0 focus-visible:ring-0 text-sm"
+            className="w-full max-w-full min-w-0 h-10 bg-gray-50 border-0 focus-visible:ring-0 text-sm"
           />
         </div>
 

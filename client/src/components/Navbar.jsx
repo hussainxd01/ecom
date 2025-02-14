@@ -5,6 +5,7 @@ import WomenSectionImage from "../assets/images/women.jpg";
 import { useShop } from "../context/ShopContext";
 import { useToast } from "../hooks/use-toast";
 import SearchSidebar from "./SearchSidebar";
+import SearchTopBar from "./SearchTopBar";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 // Navigation data configuration
@@ -300,6 +301,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
+  const [isMobile, setIsMobile] = useState(false);
+
   const [state, setState] = useState({
     open: false,
     searchQuery: "",
@@ -310,6 +313,14 @@ const Navbar = () => {
     showManageSidebar: false,
     isSearchOpen: false,
   });
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Update isAdmin status when user changes
   useEffect(() => {
     setState((prev) => ({
@@ -392,8 +403,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation (keep the same) */}
-
+        {/* Desktop Navigation */}
         <div className="text-gray-600 flex-1 ml-60 h-full sm:flex items-center hidden text-xs tracking-widest uppercase font-light">
           {NAVIGATION_CONFIG.main.map((item) => (
             <NavLink
@@ -449,7 +459,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Desktop Icons (keep the same) */}
+        {/* Desktop Icons */}
         <div className="sm:flex hidden gap-3 h-full items-center justify-center">
           <button
             className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
@@ -481,6 +491,7 @@ const Navbar = () => {
           </button>
         </div>
       </nav>
+
       {/* Mobile Sidebar */}
       <div
         className={`fixed inset-0 z-50 transition-all duration-300 ${
@@ -605,25 +616,48 @@ const Navbar = () => {
           </ul>
         </div>
       )}
-      {/* Search Bar */}
 
-      <Sheet
-        open={state.isSearchOpen}
-        onOpenChange={(open) =>
-          setState((prev) => ({ ...prev, isSearchOpen: open }))
-        }
-      >
-        <SheetContent side="right" className="w-full sm:w-[400px] p-0">
-          <SearchSidebar
-            searchQuery={state.searchQuery}
-            searchResults={state.searchResults}
-            onSearchChange={(value) =>
-              setState((prev) => ({ ...prev, searchQuery: value }))
-            }
-            onItemClick={handleSearchClick}
-          />
-        </SheetContent>
-      </Sheet>
+      {/* Search Components */}
+      {state.isSearchOpen && (
+        <>
+          {/* Desktop Search Sidebar */}
+          {!isMobile && (
+            <div className="fixed inset-0 z-50 bg-black/50">
+              <div className="fixed right-0 top-0 h-full w-full max-w-[600px] bg-white shadow-lg">
+                <SearchSidebar
+                  searchQuery={state.searchQuery}
+                  searchResults={state.searchResults}
+                  onSearchChange={(value) =>
+                    setState((prev) => ({ ...prev, searchQuery: value }))
+                  }
+                  onItemClick={handleSearchClick}
+                  onClose={() =>
+                    setState((prev) => ({ ...prev, isSearchOpen: false }))
+                  }
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Mobile Search TopBar */}
+          {isMobile && (
+            <div className="flex w-full">
+              <SearchTopBar
+                isOpen={state.isSearchOpen}
+                searchQuery={state.searchQuery}
+                searchResults={state.searchResults}
+                onSearchChange={(value) =>
+                  setState((prev) => ({ ...prev, searchQuery: value }))
+                }
+                onItemClick={handleSearchClick}
+                onClose={() =>
+                  setState((prev) => ({ ...prev, isSearchOpen: false }))
+                }
+              />
+            </div>
+          )}
+        </>
+      )}
     </section>
   );
 };

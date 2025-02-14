@@ -75,3 +75,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Add this to your global CSS */
+@media (max-width: 640px) {
+  [data-radix-sheet-content] {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+}
+
+/* * {
+  border: 1px solid red;
+} */
