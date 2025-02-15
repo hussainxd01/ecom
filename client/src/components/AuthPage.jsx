@@ -5,17 +5,14 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "../hooks/use-toast";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 const AuthPage = () => {
-  const { login, register } = useShop();
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const { login, register, addToast } = useShop();
   const [isLoading, setIsLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -42,51 +39,31 @@ const AuthPage = () => {
           email: formData.email,
           password: formData.password,
         });
+
         if (result.success) {
-          toast({
-            title: "Welcome back!",
-            description: "You've successfully logged in.",
-            action: (
-              <ToastAction altText="Go to dashboard">
-                Go to dashboard
-              </ToastAction>
-            ),
-          });
+          addToast("Welcome back! You're logged in.", "success");
           navigate("/");
         } else {
-          toast({
-            variant: "destructive",
-            title: "Login failed",
-            description: result.error,
-          });
+          addToast(`Login failed: ${result.error || "Unknown error"}`, "error");
+          return; // Stop execution here to prevent further actions
         }
       } else {
         const result = await register(formData);
         if (result.success) {
-          toast({
-            title: "Account created!",
-            description: "You've successfully signed up.",
-            action: (
-              <ToastAction altText="Go to dashboard">
-                Go to dashboard
-              </ToastAction>
-            ),
-          });
+          addToast("Account Created Successfully!", "success");
           navigate("/");
         } else {
-          toast({
-            variant: "destructive",
-            title: "Registration failed",
-            description: result.error,
-          });
+          addToast(
+            `There was a problem creating your account: ${
+              result.error || "Unknown error"
+            }`,
+            "error"
+          );
+          return;
         }
       }
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-      });
+      addToast("An error occurred during the request.", "error");
     } finally {
       setIsLoading(false);
     }

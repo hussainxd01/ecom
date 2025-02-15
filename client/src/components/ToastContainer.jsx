@@ -28,7 +28,7 @@ const Toast = ({ toast, removeToast }) => {
 
   return (
     <div
-      className={`bg-white  text-black px-6 py-4 max-w-sm w-full transition-all duration-300 ease-in-out border border-gray-200 ${
+      className={`bg-white  text-black px-6 py-4 max-w-sm w-full transition-all duration-300 ease-in-out border border-gray-400 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       }`}
     >

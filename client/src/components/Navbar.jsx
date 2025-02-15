@@ -3,10 +3,8 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import MenSectionImage from "../assets/images/mens.jpg";
 import WomenSectionImage from "../assets/images/women.jpg";
 import { useShop } from "../context/ShopContext";
-import { useToast } from "../hooks/use-toast";
 import SearchSidebar from "./SearchSidebar";
 import SearchTopBar from "./SearchTopBar";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 // Navigation data configuration
 const NAVIGATION_CONFIG = {
@@ -26,7 +24,7 @@ const NAVIGATION_CONFIG = {
       icon: ManageIcon,
       adminOnly: true,
     },
-    { name: "Logout", to: "/logout", icon: LogoutIcon },
+    { name: "Logout", icon: LogoutIcon },
     { name: "Login", to: "/auth", icon: LogoutIcon },
   ],
   shop: {
@@ -298,9 +296,8 @@ const FeaturedImage = ({ src, alt, title }) => (
 );
 
 const Navbar = () => {
-  const { logout, user, products } = useShop();
+  const { logout, user, products, addToast } = useShop();
   const navigate = useNavigate();
-  const toast = useToast();
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -395,11 +392,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-      duration: 3000,
-    });
+    addToast("You have been logged out.", "success");
+    navigate("/");
   };
 
   return (

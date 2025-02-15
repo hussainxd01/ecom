@@ -6,13 +6,18 @@ import { useShop } from "../context/ShopContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/hooks/use-toast";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 const CheckoutPage = () => {
-  const { cart, user, createOrder, validateShippingInfo, orderStatus } =
-    useShop();
+  const {
+    cart,
+    user,
+    createOrder,
+    validateShippingInfo,
+    orderStatus,
+    addToast,
+  } = useShop();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
@@ -62,20 +67,12 @@ const CheckoutPage = () => {
     const result = await createOrder(formData);
 
     if (result.success) {
-      toast({
-        title: "Order placed successfully!",
-        description: "You will receive a confirmation email shortly.",
-      });
+      addToast("Order placed successfully!", "success");
       navigate("/order-confirmation", {
         state: { orderId: result.orderId },
       });
     } else {
-      toast({
-        title: "Error",
-        description:
-          "There was a problem placing your order. Please try again.",
-        variant: "destructive",
-      });
+      addToast(`Order failed: ${result.error || "Unknown error"}`, "error");
     }
   };
 

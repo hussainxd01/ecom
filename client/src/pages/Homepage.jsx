@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar";
 import ImageCarousel from "../components/ImageCarousel";
 import HeroImageCarousel from "../components/HeroImageCarousel";
 import FeaturedProduct from "../components/FeaturedProduct";
-import { Toaster } from "@/components/ui/toaster";
 import Footer from "../components/Footer";
 import Newsletter from "../components/Newsletter";
 const Homepage = () => {
@@ -19,7 +18,6 @@ const Homepage = () => {
       <FeaturedProduct />
       <Newsletter />
       <Footer />
-      <Toaster />
     </section>
   );
 };

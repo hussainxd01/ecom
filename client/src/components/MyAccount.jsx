@@ -10,10 +10,11 @@ import Footer from "./Footer";
 const MyAccount = () => {
   const [activeSection, setActiveSection] = useState("orders");
   const navigate = useNavigate();
-  const { logout } = useShop();
+  const { logout, addToast } = useShop();
 
   const handleLogout = async () => {
     await logout();
+    addToast("You have been logged out.", "success");
     navigate("/auth");
   };
 
