@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import ToastContainer from "../components/ToastContainer";
 
 const ShopContext = createContext(null);
 
@@ -32,6 +33,16 @@ export const ShopProvider = ({ children }) => {
     error: null,
   });
   const [users, setUsers] = useState([]);
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (message) => {
+    const newToast = { id: Date.now().toString(), message };
+    setToasts((prevToasts) => [...prevToasts, newToast]);
+  };
+
+  const removeToast = (id) => {
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+  };
 
   const baseUrl = "https://ecom-1-9xsu.onrender.com/api";
 
@@ -484,10 +495,15 @@ export const ShopProvider = ({ children }) => {
     editUser,
     fetchAllOrders,
     updateOrderStatus,
+    addToast,
+    removeToast,
   };
 
   return (
-    <ShopContext.Provider value={contextValue}>{children}</ShopContext.Provider>
+    <ShopContext.Provider value={contextValue}>
+      {children}
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+    </ShopContext.Provider>
   );
 };
 

@@ -9,10 +9,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "../hooks/use-toast";
 
 const ProductDetail = () => {
-  const { products, addToCart, addToWishlist, user } = useShop();
+  const { products, addToCart, addToWishlist, user, addToast } = useShop();
   const { productId } = useParams();
   const product = products.find((p) => p._id === productId);
 
@@ -27,7 +26,6 @@ const ProductDetail = () => {
     return <div className="container mx-auto px-4 py-8">Product not found</div>;
   }
 
-  const { toast } = useToast();
   const navigate = useNavigate();
   const validateAndAddToCart = () => {
     setError("");
@@ -55,19 +53,10 @@ const ProductDetail = () => {
         selectedColor,
       });
 
-      toast({
-        title: "ADDED TO CART",
-        description: `${product.name.toUpperCase()} HAS BEEN ADDED TO YOUR CART.`,
-
-        action: (
-          <Button
-            onClick={() => navigate("/cart")}
-            className="text-primary  text-white"
-          >
-            View Cart
-          </Button>
-        ),
-      });
+      addToast(
+        `${product.name}, SIZE ${selectedSize} ADDED TO CART.`,
+        "success"
+      );
     } catch (err) {
       setError(err.message || "Failed to add item to cart");
     }
