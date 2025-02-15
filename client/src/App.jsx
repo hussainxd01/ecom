@@ -19,7 +19,7 @@ import TermsAndConditions from "./components/TermsAndCondition";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 const App = () => {
   return (
-    <section className="font-sans">
+    <section className="font-sans overflow-x-hidden">
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/add-products" element={<ProductForm />} />
