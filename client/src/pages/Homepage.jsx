@@ -5,6 +5,8 @@ import HeroImageCarousel from "../components/HeroImageCarousel";
 import FeaturedProduct from "../components/FeaturedProduct";
 import Footer from "../components/Footer";
 import Newsletter from "../components/Newsletter";
+import Statement from "../components/Statement";
+import WhyChooseUs from "../components/WhyChooseUs";
 const Homepage = () => {
   return (
     <section>
@@ -15,7 +17,9 @@ const Homepage = () => {
       <div className="sm:flex hidden">
         <HeroImageCarousel />
       </div>
+      <Statement />
       <FeaturedProduct />
+      <WhyChooseUs />
       <Newsletter />
       <Footer />
     </section>
