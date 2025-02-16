@@ -9,8 +9,18 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 const MyAccount = () => {
   const [activeSection, setActiveSection] = useState("orders");
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
   const { logout, addToast } = useShop();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -18,54 +28,51 @@ const MyAccount = () => {
     navigate("/auth");
   };
 
+  const navItems = [
+    { id: "orders", icon: Package, label: "Orders" },
+    { id: "settings", icon: Settings, label: "Account Settings" },
+    { id: "logout", icon: LogOut, label: "Sign Out", action: handleLogout },
+  ];
+
   return (
-    <section>
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h1 className="text-2xl font-normal mb-8">My Account</h1>
+    <section className="max-w-7xl mx-auto px-4 py-12">
+      <h1 className="text-2xl font-normal mb-8">My Account</h1>
 
-        <div className="grid grid-cols-4 gap-8">
-          {/* Side Navigation */}
-          <nav className="col-span-1">
-            <div className="space-y-4">
+      <div
+        className={`${isMobile ? "flex flex-col" : "grid grid-cols-4 gap-8"}`}
+      >
+        {/* Navigation */}
+        <nav className={`${isMobile ? "mb-8" : "col-span-1"}`}>
+          <div className={`${isMobile ? "flex justify-between" : "space-y-4"}`}>
+            {navItems.map((item) => (
               <button
-                onClick={() => setActiveSection("orders")}
-                className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 hover:bg-gray-50 ${
-                  activeSection === "orders" ? "bg-gray-50" : ""
-                }`}
+                key={item.id}
+                onClick={() =>
+                  item.action ? item.action() : setActiveSection(item.id)
+                }
+                className={`
+                  ${isMobile ? "flex-1 py-2" : "w-full text-left px-4 py-3"}
+                  text-sm flex items-center justify-center md:justify-start gap-3 
+                  hover:bg-gray-50 transition-colors
+                  ${activeSection === item.id ? "bg-gray-50" : ""}
+                  ${item.id === "logout" ? "text-gray-600" : ""}
+                `}
               >
-                <Package size={18} />
-                Orders
+                <item.icon size={18} />
+                <span className={`${isMobile ? "hidden" : ""}`}>
+                  {item.label}
+                </span>
               </button>
-
-              <button
-                onClick={() => setActiveSection("settings")}
-                className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 hover:bg-gray-50 ${
-                  activeSection === "settings" ? "bg-gray-50" : ""
-                }`}
-              >
-                <Settings size={18} />
-                Account Settings
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-3 text-sm flex items-center gap-3 text-gray-600 hover:bg-gray-50"
-              >
-                <LogOut size={18} />
-                Sign Out
-              </button>
-            </div>
-          </nav>
-
-          {/* Main Content */}
-          <div className="col-span-3">
-            {activeSection === "orders" && <OrdersSection />}
-            {activeSection === "settings" && <SettingsSection />}
+            ))}
           </div>
+        </nav>
+
+        {/* Main Content */}
+        <div className={`${isMobile ? "" : "col-span-3"}`}>
+          {activeSection === "orders" && <OrdersSection />}
+          {activeSection === "settings" && <SettingsSection />}
         </div>
       </div>
-      <Footer />
     </section>
   );
 };
