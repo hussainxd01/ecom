@@ -5,7 +5,7 @@ import WomenSectionImage from "../assets/images/women.jpg";
 import { useShop } from "../context/ShopContext";
 import SearchSidebar from "./SearchSidebar";
 import SearchTopBar from "./SearchTopBar";
-
+import LOGO from "../assets/images/LOGO_TRANSPARENT.png";
 // Navigation data configuration
 const NAVIGATION_CONFIG = {
   main: [
@@ -433,7 +433,7 @@ const Navbar = () => {
             className="text-2xl tracking-widest uppercase font-extrabold text-black"
             to={"/"}
           >
-            ecom
+            <img src={LOGO} alt="Logo" className="w-40" />
           </Link>
         </div>
 
