@@ -12,21 +12,25 @@ const FeaturedProducts = () => {
   const productRefs = useRef([]);
 
   useEffect(() => {
-    gsap.fromTo(
-      productRefs.current,
-      { opacity: 0, y: 40 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power3.out",
-        stagger: 0.2,
-        scrollTrigger: {
-          trigger: scrollContainerRef.current,
-          start: "top 80%",
-        },
-      }
-    );
+    if (productRefs.current.length === 0) return;
+
+    requestAnimationFrame(() => {
+      gsap.fromTo(
+        productRefs.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          stagger: 0.2,
+          scrollTrigger: {
+            trigger: scrollContainerRef.current,
+            start: "top 80%",
+          },
+        }
+      );
+    });
 
     // Optional: Auto-scroll on load
     gsap.to(scrollContainerRef.current, {
@@ -34,7 +38,7 @@ const FeaturedProducts = () => {
       duration: 1,
       ease: "power3.inOut",
     });
-  }, []);
+  }, [products]); // Re-run when products change
 
   return (
     <section className="container mx-auto px-4 md:px-24 py-16">
@@ -74,7 +78,7 @@ const FeaturedProducts = () => {
             to={`/product/${product._id}`}
             key={product._id}
             ref={(el) => (productRefs.current[index] = el)}
-            className="flex-none w-full md:w-[calc((100%-3rem)/3)] snap-start group opacity-0"
+            className="flex-none w-full md:w-[calc((100%-3rem)/3)] snap-start group"
           >
             <div className="relative aspect-[3/4] mb-4 overflow-hidden">
               <img
