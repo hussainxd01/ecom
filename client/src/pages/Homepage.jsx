@@ -7,9 +7,11 @@ import Footer from "../components/Footer";
 import Newsletter from "../components/Newsletter";
 import Statement from "../components/Statement";
 import WhyChooseUs from "../components/WhyChooseUs";
+import AnnouncementBar from "../components/AnnouncementBar";
 const Homepage = () => {
   return (
     <section>
+      <AnnouncementBar />
       <Navbar />
       <div className="sm:hidden flex">
         <ImageCarousel />

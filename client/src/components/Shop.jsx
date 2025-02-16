@@ -14,6 +14,7 @@ import { ChevronDown, Search, X } from "lucide-react";
 import Navbar from "./Navbar";
 import { useParams } from "react-router-dom";
 import Footer from "./Footer";
+import Breadcrumb from "./Breadcrumb";
 
 export default function Shop() {
   const { products, categories } = useContext(ShopContext);
@@ -82,6 +83,7 @@ export default function Shop() {
       <Navbar />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header and Filters */}
+        <Breadcrumb />
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
             <h1 className="text-xl font-normal uppercase tracking-widest">
@@ -90,7 +92,7 @@ export default function Shop() {
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
-                className="font-normal uppercase text-xs tracking-widest w-full sm:w-auto"
+                className="font-normal uppercase text-xs tracking-widest w-full sm:w-auto border border-gray-200 hover:bg-gray-50"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 Filter and Sort
@@ -174,7 +176,7 @@ export default function Shop() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {filteredProducts.map((product) => (
             <Link
               key={product._id}

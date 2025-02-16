@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
+import Breadcrumb from "./Breadcrumb";
 
 const ProductDetail = () => {
   const { products, addToCart, addToWishlist, user, addToast } = useShop();
@@ -65,6 +66,8 @@ const ProductDetail = () => {
     <section>
       <Navbar />
       <div className="container mx-auto px-4 py-8">
+        <Breadcrumb productName={product.name} />
+
         <div className="grid md:grid-cols-2 gap-8">
           {/* Product Images */}
           <div className="space-y-4">
