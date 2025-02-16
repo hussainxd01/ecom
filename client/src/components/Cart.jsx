@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function CartPage() {
   const {
@@ -40,83 +40,38 @@ export default function CartPage() {
     loadCart();
   }, [user, fetchCart]);
 
-  if (isLoading || user === undefined) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Loading...</h1>
-      </div>
-    );
-  }
-
-  // Redirect to login only if authentication check is completed and user is still null
-  if (!isLoading && !user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Loading cart...</h1>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Error loading cart</h1>
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
-
-  // Ensure cart and cart.items exist
-  if (!cart || !cart.items) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">Cart unavailable</h1>
-        <p>There was a problem loading your cart. Please try again later.</p>
-      </div>
-    );
-  }
-
-  const handleQuantityChange = async (productId, newQuantity, size) => {
-    try {
-      if (newQuantity < 1) return;
-      if (newQuantity > 99) return; // Add maximum quantity limit
-      await updateCartItemQuantity(productId, newQuantity, size);
-    } catch (err) {
-      console.error("Error updating quantity:", err);
-      // Optionally show an error message to the user
-    }
-  };
-
-  const handleRemoveItem = async (productId, size) => {
-    try {
-      await removeFromCart(productId, size);
-    } catch (err) {
-      console.error("Error removing item:", err);
-      // Optionally show an error message to the user
-    }
-  };
-
-  const handleClearCart = async () => {
-    try {
-      await clearCart();
-    } catch (err) {
-      console.error("Error clearing cart:", err);
-      // Optionally show an error message to the user
-    }
-  };
-
   return (
     <section className="min-h-screen flex flex-col">
       <Navbar />
+
       <div className="container mx-auto px-4 py-8 flex-grow">
         <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
-        {cart.items.length === 0 ? (
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="text-center py-8">
+            <h2 className="text-xl font-semibold">Loading your cart...</h2>
+          </div>
+        ) : error ? (
+          /* Error State */
+          <div className="text-center py-8">
+            <h2 className="text-xl font-semibold text-red-500">
+              Error loading cart
+            </h2>
+            <p className="text-gray-600">{error}</p>
+          </div>
+        ) : !user ? (
+          /* User Not Logged In */
+          <div className="text-center py-8">
+            <h2 className="text-xl font-semibold">
+              Please login to view your cart
+            </h2>
+            <Link to="/auth">
+              <Button className="mt-4 rounded-none ">Log In</Button>
+            </Link>
+          </div>
+        ) : !cart || !cart.items || cart.items.length === 0 ? (
+          /* Empty Cart */
           <div className="text-center py-8">
             <p className="mb-4">Your cart is empty.</p>
             <Link
@@ -127,6 +82,7 @@ export default function CartPage() {
             </Link>
           </div>
         ) : (
+          /* Cart Items */
           <>
             <div className="space-y-4">
               {cart.items.map((item) => (
@@ -144,10 +100,10 @@ export default function CartPage() {
                       }}
                     />
                     <div>
-                      <h2 className="font-semibold uppercase">
+                      <h2 className="font-semibold uppercase text-xs sm:text-base">
                         {item.product.name}
                       </h2>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 ">
                         ₹{(item.product.price || 0).toFixed(2)}
                       </p>
                       {item.size && (
@@ -162,7 +118,7 @@ export default function CartPage() {
                       variant="outline"
                       size="icon"
                       onClick={() =>
-                        handleQuantityChange(
+                        updateCartItemQuantity(
                           item.product._id,
                           item.quantity - 1,
                           item.size
@@ -178,7 +134,7 @@ export default function CartPage() {
                       max="99"
                       value={item.quantity}
                       onChange={(e) =>
-                        handleQuantityChange(
+                        updateCartItemQuantity(
                           item.product._id,
                           Number(e.target.value),
                           item.size
@@ -190,7 +146,7 @@ export default function CartPage() {
                       variant="outline"
                       size="icon"
                       onClick={() =>
-                        handleQuantityChange(
+                        updateCartItemQuantity(
                           item.product._id,
                           item.quantity + 1,
                           item.size
@@ -204,7 +160,7 @@ export default function CartPage() {
                       variant="destructive"
                       size="icon"
                       onClick={() =>
-                        handleRemoveItem(item.product._id, item.size)
+                        removeFromCart(item.product._id, item.size)
                       }
                     >
                       <Trash2 className="h-4 w-4" />
@@ -218,7 +174,7 @@ export default function CartPage() {
                 Total: ₹{(cart.total || 0).toFixed(2)}
               </p>
               <div className="space-x-2">
-                <Button variant="outline" onClick={handleClearCart}>
+                <Button variant="outline" onClick={clearCart}>
                   Clear Cart
                 </Button>
                 <Link to="/checkout">
@@ -229,6 +185,7 @@ export default function CartPage() {
           </>
         )}
       </div>
+
       <Footer />
     </section>
   );
