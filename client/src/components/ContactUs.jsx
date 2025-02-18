@@ -3,13 +3,18 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-
-const ContactUs = () => {
+export default function ContactUs() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    console.log("Form submitted:", formData);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,96 +24,90 @@ const ContactUs = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically send the form data to a server
-    console.log("Form submitted:", formData);
-    // Reset form after submission
-    setFormData({ name: "", email: "", message: "" });
-  };
-
   return (
     <section>
       <Navbar />
-      <div className="bg-white min-h-screen flex flex-col justify-center items-center p-4">
-        <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-              Contact Us
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              We'd love to hear from you
-            </p>
-          </div>
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm -space-y-px">
-              <div>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-gray-500 focus:border-gray-500 focus:z-10 sm:text-sm"
-                  placeholder="Your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-gray-500 focus:border-gray-500 focus:z-10 sm:text-sm"
-                  placeholder="Email Address"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  rows="4"
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-gray-500 focus:border-gray-500 focus:z-10 sm:text-sm"
-                  placeholder="Your Message"
-                  value={formData.message}
-                  onChange={handleChange}
-                ></textarea>
-              </div>
+      <div className="min-h-screen bg-white">
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="grid md:grid-cols-2 gap-8 items-center max-w-6xl mx-auto">
+            {/* Image Section */}
+            <div className="relative h-[400px] md:h-[600px] bg-gray-100">
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-R10Pc0BDXmBJq66npb74JkPIPlhUzD.png"
+                alt="Aesthetic"
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            <div>
-              <button
-                type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              >
-                Send Message
-              </button>
-            </div>
-          </form>
+            {/* Form Section */}
+            <div className="space-y-8 md:pl-8">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-light tracking-wider mb-4">
+                  ENQUIRE
+                </h2>
+                <p className="text-gray-600 mb-8">
+                  Connect with us about our latest collection and bespoke
+                  services.
+                </p>
+              </div>
 
-          <div className="mt-8 text-center">
-            <h3 className="text-lg font-medium text-gray-900">
-              Other Ways to Reach Us
-            </h3>
-            <p className="mt-2 text-sm text-gray-600">
-              Email: contact@minimalclothing.com
-            </p>
-            <p className="mt-1 text-sm text-gray-600">
-              Phone: +1 (555) 123-4567
-            </p>
-            <p className="mt-1 text-sm text-gray-600">
-              Address: 123 Fashion Street, Style City, 12345
-            </p>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Name"
+                    className="w-full border-b border-gray-300 py-2 placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    className="w-full border-b border-gray-300 py-2 placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Message"
+                    rows="4"
+                    className="w-full border-b border-gray-300 py-2 placeholder-gray-400 focus:outline-none focus:border-black transition-colors resize-none"
+                    required
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full md:w-auto px-8 py-3 bg-black text-white hover:bg-gray-900 transition-colors"
+                >
+                  SEND
+                </button>
+              </form>
+
+              <div className="space-y-2 pt-8 text-sm text-gray-600">
+                <p>contact@elvn.com</p>
+                <div>
+                  <p>Monday-Saturday: 10:00-18:00</p>
+                  <p>Sunday: 11:00-17:00</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <Footer />
     </section>
   );
-};
-
-export default ContactUs;
+}
