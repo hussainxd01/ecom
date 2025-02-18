@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import image from "../assets/images/contact_image.webp";
 export default function ContactUs() {
   const [formData, setFormData] = useState({
     name: "",
@@ -33,9 +34,10 @@ export default function ContactUs() {
             {/* Image Section */}
             <div className="relative h-[400px] md:h-[600px] bg-gray-100">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-R10Pc0BDXmBJq66npb74JkPIPlhUzD.png"
+                src={image}
                 alt="Aesthetic"
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
 
