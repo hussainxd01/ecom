@@ -17,6 +17,7 @@ import OurStory from "./components/OurStory";
 import TermsAndConditions from "./components/TermsAndCondition";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import NewsletterPopup from "./components/NewsletterPopup";
+import ContactUs from "./components/ContactUs";
 const App = () => {
   return (
     <div className="font-sans overflow-x-hidden">
@@ -37,6 +38,7 @@ const App = () => {
         <Route path="/category/:category" element={<CategoryPage />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/contact-us" element={<ContactUs />} />
       </Routes>
       <NewsletterPopup />
     </div>

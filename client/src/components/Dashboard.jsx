@@ -20,26 +20,26 @@ import { Input } from "@/components/ui/input";
 import UserList from "./UserList";
 
 const AdminDashboard = () => {
-  const { user, loading } = useShop(); // Using 'user' from context
+  const { user, loading } = useShop();
   const navigate = useNavigate();
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
   const [activeTab, setActiveTab] = useState("add Product");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Redirect non-admin users
   useEffect(() => {
     if (!loading && (!user || user.role !== "admin")) {
-      navigate("/"); // Redirect to home if not admin
+      navigate("/");
     }
   }, [user, loading, navigate]);
 
-  // Handle screen resize
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      setIsSidebarOpen(window.innerWidth >= 768);
+      const mobileView = window.innerWidth < 768;
+      setIsMobile(mobileView);
+      setIsSidebarOpen(!mobileView);
     };
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -53,32 +53,25 @@ const AdminDashboard = () => {
 
   const handleTabChange = (id) => {
     setActiveTab(id);
-    if (isMobile) {
-      setIsSidebarOpen(false);
-    }
+    if (isMobile) setIsSidebarOpen(false);
   };
 
-  if (loading) {
-    return <p className="text-center mt-10">Loading...</p>; // Prevent rendering until user is loaded
-  }
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Overlay for mobile */}
       {isMobile && isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-20"
+          className="fixed inset-0 bg-black/30 z-20"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 h-full bg-white border-r border-gray-100 transition-all duration-300 ease-in-out z-30",
-          isSidebarOpen ? "w-64" : "w-16",
-          isMobile &&
-            (isSidebarOpen ? "w-64 translate-x-0" : "-translate-x-full")
+          "fixed top-0 left-0 h-full bg-white border-r border-gray-100 transition-transform duration-300 z-30",
+          isSidebarOpen ? "translate-x-0 w-64" : "-translate-x-full w-64",
+          !isMobile && "translate-x-0 w-64"
         )}
       >
         <div className="h-16 border-b border-gray-100 flex items-center justify-between px-4">
@@ -92,23 +85,22 @@ const AdminDashboard = () => {
               variant="ghost"
               size="icon"
               onClick={() => setIsSidebarOpen(false)}
-              className="md:hidden"
             >
               <X className="h-5 w-5" />
             </Button>
           )}
         </div>
+
         <nav className="w-full">
           {menuItems.map((item) => (
             <button
               key={item.id}
               className={cn(
-                "w-full flex items-center text-left py-6 px-3 text-sm font-light transition-colors",
+                "w-full flex items-center py-6 px-3 text-sm font-light transition-colors",
                 "hover:bg-gray-50 hover:text-gray-900",
                 activeTab === item.id
                   ? "bg-gray-50 text-gray-900"
-                  : "text-gray-600",
-                !isSidebarOpen && !isMobile && "justify-center px-4"
+                  : "text-gray-600"
               )}
               onClick={() => handleTabChange(item.id)}
             >
@@ -121,39 +113,32 @@ const AdminDashboard = () => {
         </nav>
       </aside>
 
-      {/* Main Content */}
       <main
         className={cn(
-          "min-h-screen flex flex-col min-w-0 transition-all duration-300",
-          isSidebarOpen ? "md:ml-64" : "md:ml-16",
-          isMobile && "ml-0"
+          "min-h-screen flex flex-col transition-all duration-300",
+          isSidebarOpen && !isMobile ? "md:ml-64" : "md:ml-0"
         )}
       >
-        {/* Header */}
-        <header className="h-16 flex items-center justify-between px-4 bg-white border-b border-gray-100 sticky top-0 z-10">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="hover:bg-gray-50"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="flex items-center">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="text"
-                placeholder="Search"
-                className="w-40 md:w-64 pl-9 py-5 border-0 bg-gray-50 focus:ring-0 text-sm placeholder:text-gray-400"
-              />
-            </div>
+        <header className="h-16 flex items-center justify-between px-4 bg-white border-b border-gray-100">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsSidebarOpen((prev) => !prev)}
+            className="hover:bg-gray-50"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Search"
+              className="w-40 md:w-64 pl-9 py-5 border-0 bg-gray-50 focus:ring-0 text-sm placeholder:text-gray-400"
+            />
           </div>
         </header>
 
-        {/* Content Area */}
         <ScrollArea className="flex-1">
           <div className="p-4 md:p-6 h-full">
             {activeTab === "add Product" && <ProductForm />}

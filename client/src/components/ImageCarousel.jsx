@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
-import image1 from "../assets/images/IMG_1.png";
-import image2 from "../assets/images/IMG_2.png";
-import image3 from "../assets/images/IMG_3.png";
+import image1 from "../assets/images/IMG_1.webp";
+import image2 from "../assets/images/IMG_2.webp";
+import image3 from "../assets/images/IMG_3.webp";
 
 const ImageCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,6 +59,7 @@ const ImageCarousel = () => {
               src={image}
               alt={`Image ${index + 1}`}
               className="w-full h-auto object-cover"
+              loading="lazy"
             />
           </div>
         ))}

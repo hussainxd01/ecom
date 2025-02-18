@@ -11,8 +11,8 @@ export default function UserList() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-semibold mb-6">User List</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
+      <div className="overflow-x-auto w-full">
+        <table className="w-full border-collapse min-w-[600px]">
           <thead>
             <tr className="bg-gray-100">
               <th className="text-left p-3 font-medium">Name</th>
@@ -28,19 +28,21 @@ export default function UserList() {
                 key={user._id}
                 className="border-b border-gray-200 hover:bg-gray-50"
               >
-                <td className="p-3">
+                <td className="p-3 whitespace-nowrap">
                   {user.firstName} {user.lastName}
                 </td>
-                <td className="p-3">{user.email}</td>
-                <td className="p-3 capitalize">{user.role}</td>
-                <td className="p-3">
+                <td className="p-3 whitespace-nowrap">{user.email}</td>
+                <td className="p-3 capitalize whitespace-nowrap">
+                  {user.role}
+                </td>
+                <td className="p-3 whitespace-nowrap">
                   {user.emailVerified ? (
                     <CheckCircle className="text-green-500" size={20} />
                   ) : (
                     <XCircle className="text-red-500" size={20} />
                   )}
                 </td>
-                <td className="p-3">
+                <td className="p-3 whitespace-nowrap">
                   {format(new Date(user.createdAt), "MMM d, yyyy")}
                 </td>
               </tr>

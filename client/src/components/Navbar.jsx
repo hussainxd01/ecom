@@ -11,8 +11,8 @@ const NAVIGATION_CONFIG = {
   main: [
     { name: "Home", to: "/" },
     { name: "Shop", to: "/shop" },
-    { name: "About", to: "/about" },
-    { name: "Contact", to: "/contact" },
+    { name: "About", to: "/our-story" },
+    { name: "Contact", to: "/contact-us" },
   ],
   user: [
     { name: "My Account", to: "/account", icon: UserIcon },
