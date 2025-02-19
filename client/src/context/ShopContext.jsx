@@ -71,10 +71,11 @@ export const ShopProvider = ({ children }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const data = await response.json();
+
+      const data = await handleApiResponse(response, "Failed to subscribe");
       return { success: true, data };
-    } catch (err) {
-      return { success: false, error: err.message };
+    } catch (error) {
+      return { success: false, error: error.message };
     }
   };
 

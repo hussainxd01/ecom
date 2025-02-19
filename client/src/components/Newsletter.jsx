@@ -15,7 +15,7 @@ const Newsletter = () => {
       addToast("Subscribed successfully!", "success");
       setFormData({ email: "" });
     } else {
-      addToast(`Subscription failed: ${error || "Unknown error"}`, "error");
+      addToast(`Subscription failed: ${error}`, "error"); // Show exact backend message
     }
   };
 

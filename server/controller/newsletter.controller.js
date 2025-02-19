@@ -1,30 +1,22 @@
 import Newsletter from "../models/newsletter.model.js";
 
-export const createNewsletter = async (req, res) => {
+const createNewsletter = async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email)
-      return res
-        .status(400)
-        .json({ success: false, error: "Email is required" });
-
-    const existingEmail = await Newsletter.findOne({
-      email: email.toLowerCase().trim(),
-    });
-    if (existingEmail) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Email already exists" });
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
     }
 
-    const newsletter = new Newsletter({ email: email.toLowerCase().trim() });
-    await newsletter.save();
+    const existingUser = await Newsletter.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
 
-    return res
-      .status(201)
-      .json({ success: true, message: "Subscribed successfully!" });
+    const newsletter = new Newsletter({ email: email.toLowerCase() });
+    await newsletter.save();
+    res.status(201).json({ message: "Subscribed successfully!" });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 
