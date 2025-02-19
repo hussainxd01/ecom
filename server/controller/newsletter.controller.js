@@ -1,6 +1,6 @@
 import Newsletter from "../models/newsletter.model.js";
 
-const createNewsletter = async (req, res) => {
+export const createNewsletter = async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) {
