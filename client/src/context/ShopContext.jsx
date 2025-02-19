@@ -34,7 +34,7 @@ export const ShopProvider = ({ children }) => {
   });
   const [users, setUsers] = useState([]);
   const [toasts, setToasts] = useState([]);
-  const [message, setMessage] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   const addToast = (message) => {
     const newToast = { id: Date.now().toString(), message };
@@ -79,7 +79,15 @@ export const ShopProvider = ({ children }) => {
     }
   };
 
-  const fetchUserMessage = async () => {};
+  const fetchUserMessage = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/message`);
+      const data = await handleApiResponse(response, "Failed to fetch message");
+      setMessages(data.data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const postNewsletter = async (email) => {
     try {
@@ -489,6 +497,10 @@ export const ShopProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    fetchUserMessage();
+  });
+
+  useEffect(() => {
     if (user && user._id) {
       fetchCart();
     }
@@ -531,6 +543,8 @@ export const ShopProvider = ({ children }) => {
     removeToast,
     postNewsletter,
     postUserMessage,
+    fetchUserMessage,
+    messages,
   };
 
   return (

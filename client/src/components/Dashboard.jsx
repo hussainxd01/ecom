@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import UserList from "./UserList";
+import MessageList from "./MessageList";
 
 const AdminDashboard = () => {
   const { user, loading } = useShop();
@@ -49,6 +50,7 @@ const AdminDashboard = () => {
     { id: "all Products", label: "All Products", icon: Package },
     { id: "users", label: "Users", icon: Users },
     { id: "orders", label: "Orders", icon: ShoppingCart },
+    { id: "messages", label: "Messages", icon: Search },
   ];
 
   const handleTabChange = (id) => {
@@ -145,6 +147,7 @@ const AdminDashboard = () => {
             {activeTab === "all Products" && <ProductList />}
             {activeTab === "users" && <UserList />}
             {activeTab === "orders" && <OrderList />}
+            {activeTab === "messages" && <MessageList />}
           </div>
         </ScrollArea>
       </main>
