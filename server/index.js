@@ -8,6 +8,7 @@ import userRoute from "./routes/user.route.js";
 import cartRoute from "./routes/cart.route.js";
 import orderRoute from "./routes/order.route.js";
 import newsletterRoute from "./routes/newsletter.route.js";
+import messageRoute from "./routes/message.route.js";
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ app.use("/api/users", userRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/newsletter", newsletterRoute);
+app.use("/api/message", messageRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

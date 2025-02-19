@@ -4,17 +4,30 @@ import { useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import image from "../assets/images/contact_image.webp";
+import { useShop } from "../context/ShopContext";
 export default function ContactUs() {
+  const { postUserMessage, addToast } = useShop();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", formData);
+    try {
+      const { name, email, message } = formData;
+      if (!name || !email || !message) {
+        throw new Error("All fields are required");
+      }
+
+      await postUserMessage(formData); // Ensure it completes before proceeding
+      setFormData({ name: "", email: "", message: "" });
+
+      addToast("Message sent successfully!", "success");
+    } catch (error) {
+      addToast(`Failed to send message: ${error.message}`, "error");
+    }
   };
 
   const handleChange = (e) => {

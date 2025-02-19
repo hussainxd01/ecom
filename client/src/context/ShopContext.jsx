@@ -64,6 +64,20 @@ export const ShopProvider = ({ children }) => {
     return response.json();
   };
 
+  const postUserMessage = async (message) => {
+    try {
+      const response = await fetch(`${baseUrl}/message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(message),
+      });
+      const data = await handleApiResponse(response, "Failed to send message");
+      return { success: true, data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  };
+
   const postNewsletter = async (email) => {
     try {
       const response = await fetch(`${baseUrl}/newsletter`, {
@@ -513,6 +527,7 @@ export const ShopProvider = ({ children }) => {
     addToast,
     removeToast,
     postNewsletter,
+    postUserMessage,
   };
 
   return (
