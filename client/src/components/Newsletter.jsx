@@ -3,13 +3,14 @@ import { useShop } from "../context/ShopContext";
 
 const Newsletter = () => {
   const { postNewsletter, addToast } = useShop();
-
+  const [formData, setFormData] = React.useState({});
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const email = e.target[0].value;
+    const email = formData.email;
     const { success, error } = await postNewsletter(email);
     if (success) {
       addToast("Subscribed successfully!", "success");
+      setFormData({});
     } else {
       addToast(`Subscription failed: ${error || "Unknown error"}`, "error");
     }
@@ -32,6 +33,7 @@ const Newsletter = () => {
             type="email"
             placeholder="Enter your email"
             className="flex-1 px-4 py-3 border border-gray-200 focus:outline-none focus:border-gray-400 w-full"
+            onChange={(e) => setFormData({ email: e.target.value })}
           />
           <button className="px-8 py-3 bg-black text-white text-sm uppercase tracking-wider hover:bg-gray-900 transition-colors w-full sm:w-auto">
             Subscribe

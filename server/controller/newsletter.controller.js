@@ -3,6 +3,9 @@ const { Newsletter } = require("../model/newsletter.model");
 const createNewsletter = async (email) => {
   try {
     const newsletter = new Newsletter({ email: email.toLowerCase() }); // Convert email to lowercase
+    if (await Newsletter.findOne({ email })) {
+      return { success: false, error: "Email already exists" }; // Return error response
+    }
     await newsletter.save();
     return { success: true, error: null }; // Return success response
   } catch (error) {
