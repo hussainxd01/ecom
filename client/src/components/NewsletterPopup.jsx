@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useShop } from "../context/ShopContext";
 import {
   X,
   Facebook,
@@ -14,7 +15,8 @@ import IMAGE from "../assets/images/NEWS_IMAGE.jpg";
 
 const NewsletterPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [email, setEmail] = useState("");
+  const { postNewsletter, addToast } = useShop();
+  const [formData, setFormData] = useState({ email: "" });
 
   useEffect(() => {
     // Show popup after 10 seconds
@@ -25,11 +27,19 @@ const NewsletterPopup = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Submitted email:", email);
-    setIsOpen(false);
+    const email = formData.email.trim();
+    if (!email) return;
+
+    const { success, error } = await postNewsletter(email);
+    if (success) {
+      addToast("Subscribed successfully!", "success");
+      setFormData({ email: "" });
+      setIsOpen(false);
+    } else {
+      addToast(`Subscription failed: ${error}`, "error"); // Show exact backend message
+    }
   };
 
   if (!isOpen) return null;
@@ -66,8 +76,10 @@ const NewsletterPopup = () => {
               <input
                 type="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
                 className="w-full px-4 py-3 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-black"
                 required
               />
