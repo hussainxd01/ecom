@@ -1,4 +1,4 @@
-const { Newsletter } = require("../model/newsletter.model");
+import Newsletter from "../models/newsletter.model.js";
 
 const createNewsletter = async (email) => {
   try {
