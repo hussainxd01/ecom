@@ -1,26 +1,41 @@
 import Newsletter from "../models/newsletter.model.js";
 
-const createNewsletter = async (email) => {
+export const createNewsletter = async (req, res) => {
   try {
-    const newsletter = new Newsletter({ email: email.toLowerCase() }); // Convert email to lowercase
-    if (await Newsletter.findOne({ email })) {
-      return { success: false, error: "Email already exists" }; // Return error response
+    const { email } = req.body;
+    if (!email)
+      return res
+        .status(400)
+        .json({ success: false, error: "Email is required" });
+
+    const existingEmail = await Newsletter.findOne({
+      email: email.toLowerCase().trim(),
+    });
+    if (existingEmail) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Email already exists" });
     }
+
+    const newsletter = new Newsletter({ email: email.toLowerCase().trim() });
     await newsletter.save();
-    return { success: true, error: null }; // Return success response
+
+    return res
+      .status(201)
+      .json({ success: true, message: "Subscribed successfully!" });
   } catch (error) {
-    return { success: false, error: error.message }; // Return error response
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
 
-const fetchAllNewsletters = async () => {
+export const fetchAllNewsletters = async (req, res) => {
   try {
     const newsletters = await Newsletter.find();
-    return newsletters;
+    return res.status(200).json(newsletters);
   } catch (error) {
     console.error(error);
-    return [];
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 };
-
-export { createNewsletter, fetchAllNewsletters };

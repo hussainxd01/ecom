@@ -8,4 +8,5 @@ const router = express.Router();
 
 router.get("/", fetchAllNewsletters);
 router.post("/", createNewsletter);
+
 export default router;
