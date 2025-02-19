@@ -7,6 +7,7 @@ import categoryRoute from "./routes/category.route.js";
 import userRoute from "./routes/user.route.js";
 import cartRoute from "./routes/cart.route.js";
 import orderRoute from "./routes/order.route.js";
+import newsletterRoute from "./routes/newsletter.route.js";
 
 // Load environment variables
 dotenv.config();
@@ -39,6 +40,7 @@ app.use("/api/categories", categoryRoute);
 app.use("/api/users", userRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/orders", orderRoute);
+app.use("/api/newsletter", newsletterRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -12,7 +12,7 @@ const FeaturedProducts = () => {
   const productRefs = useRef([]);
 
   useEffect(() => {
-    if (productRefs.current.length === 0) return;
+    if (!products || products.length === 0) return;
 
     requestAnimationFrame(() => {
       gsap.fromTo(
@@ -38,7 +38,9 @@ const FeaturedProducts = () => {
       duration: 1,
       ease: "power3.inOut",
     });
-  }, [products]); // Re-run when products change
+  }, [products]);
+
+  const isLoading = !products || products.length === 0;
 
   return (
     <section className="container mx-auto px-4 md:px-24 py-16">
@@ -73,26 +75,42 @@ const FeaturedProducts = () => {
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {products.map((product, index) => (
-          <Link
-            to={`/product/${product._id}`}
-            key={product._id}
-            ref={(el) => (productRefs.current[index] = el)}
-            className="flex-none w-full md:w-[calc((100%-3rem)/3)] snap-start group"
-          >
-            <div className="relative aspect-[3/4] mb-4 overflow-hidden">
-              <img
-                src={product.images[0] || "/api/placeholder/300/400"}
-                alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-            <h3 className="text-sm font-medium uppercase">{product.name}</h3>
-            <p className="text-sm text-gray-500 mt-1">
-              ₹{product.price.toFixed(2)}
-            </p>
-          </Link>
-        ))}
+        {isLoading
+          ? // Skeleton Loading
+            [...Array(3)].map((_, index) => (
+              <div
+                key={index}
+                className="flex-none w-full md:w-[calc((100%-3rem)/3)] snap-start animate-pulse"
+              >
+                <div className="relative aspect-[3/4] mb-4 bg-gray-300 dark:bg-gray-700 rounded-lg" />
+                <div className="h-4 w-3/4 bg-gray-300 dark:bg-gray-700 rounded mt-2" />
+                <div className="h-4 w-1/2 bg-gray-300 dark:bg-gray-700 rounded mt-2" />
+              </div>
+            ))
+          : // Actual Products
+            products.map((product, index) => (
+              <Link
+                to={`/product/${product._id}`}
+                key={product._id}
+                ref={(el) => (productRefs.current[index] = el)}
+                className="flex-none w-full md:w-[calc((100%-3rem)/3)] snap-start group"
+              >
+                <div className="relative aspect-[3/4] mb-4 overflow-hidden">
+                  <img
+                    src={product.images[0] || "/api/placeholder/300/400"}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                <h3 className="text-sm font-medium uppercase">
+                  {product.name}
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  ₹{product.price.toFixed(2)}
+                </p>
+              </Link>
+            ))}
       </div>
     </section>
   );

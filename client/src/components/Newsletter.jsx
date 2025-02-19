@@ -1,6 +1,20 @@
 import React from "react";
+import { useShop } from "../context/ShopContext";
 
 const Newsletter = () => {
+  const { postNewsletter, addToast } = useShop();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const email = e.target[0].value;
+    const { success, error } = await postNewsletter(email);
+    if (success) {
+      addToast("Subscribed successfully!", "success");
+    } else {
+      addToast(`Subscription failed: ${error || "Unknown error"}`, "error");
+    }
+  };
+
   return (
     <section className="py-16 sm:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -10,7 +24,10 @@ const Newsletter = () => {
         <p className="text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto text-sm sm:text-base">
           Stay updated with our latest collections and exclusive offers.
         </p>
-        <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <form
+          className="max-w-md mx-auto flex flex-col sm:flex-row gap-3 sm:gap-4"
+          onSubmit={handleSubmit}
+        >
           <input
             type="email"
             placeholder="Enter your email"

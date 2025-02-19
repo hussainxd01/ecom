@@ -64,6 +64,20 @@ export const ShopProvider = ({ children }) => {
     return response.json();
   };
 
+  const postNewsletter = async (email) => {
+    try {
+      const response = await fetch(`${baseUrl}/newsletter`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      return { success: true, data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  };
+
   // Products
   const fetchProducts = async () => {
     try {
@@ -497,6 +511,7 @@ export const ShopProvider = ({ children }) => {
     updateOrderStatus,
     addToast,
     removeToast,
+    postNewsletter,
   };
 
   return (
