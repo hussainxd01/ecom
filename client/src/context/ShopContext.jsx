@@ -34,6 +34,7 @@ export const ShopProvider = ({ children }) => {
   });
   const [users, setUsers] = useState([]);
   const [toasts, setToasts] = useState([]);
+  const [message, setMessage] = useState([]);
 
   const addToast = (message) => {
     const newToast = { id: Date.now().toString(), message };
@@ -77,6 +78,8 @@ export const ShopProvider = ({ children }) => {
       return { success: false, error: err.message };
     }
   };
+
+  const fetchUserMessage = async () => {};
 
   const postNewsletter = async (email) => {
     try {
