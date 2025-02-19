@@ -6,6 +6,7 @@ import { useShop } from "../context/ShopContext";
 import SearchSidebar from "./SearchSidebar";
 import SearchTopBar from "./SearchTopBar";
 import LOGO from "../assets/images/LOGO_TRANSPARENT.png";
+import { ChevronDown, Menu, Search, ShoppingBag, X } from "lucide-react";
 // Navigation data configuration
 const NAVIGATION_CONFIG = {
   main: [
@@ -314,11 +315,69 @@ const FeaturedImage = ({ src, alt, title }) => (
   </div>
 );
 
+const MenuItem = ({ item, isOpen, onToggle, onClose }) => {
+  const hasSubmenu = item.submenu && item.submenu.length > 0;
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    if (hasSubmenu) {
+      e.preventDefault();
+      onToggle();
+    } else if (item.action) {
+      e.preventDefault();
+      item.action();
+      onClose();
+    } else if (item.link) {
+      navigate(item.link);
+      onClose();
+    }
+  };
+
+  return (
+    <div className="border-b border-gray-100">
+      <div
+        className="flex items-center justify-between px-6 py-4 cursor-pointer"
+        onClick={handleClick}
+      >
+        <div className="flex items-center gap-3">
+          {/* {item.icon && <item.icon className="h-4 w-4" />} */}
+          <span className="text-sm font-normal">{item.title}</span>
+        </div>
+        {hasSubmenu && (
+          <ChevronDown
+            className={`h-4 w-4 transition-transform duration-200 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
+        )}
+      </div>
+      {hasSubmenu && isOpen && (
+        <div className="bg-gray-50">
+          {item.submenu.map((subItem, index) => (
+            <div
+              key={index}
+              className="block px-8 py-3 text-sm text-gray-600 hover:text-gray-900 cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(subItem.link);
+                onClose();
+              }}
+            >
+              {subItem.title}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Navbar = () => {
   const { logout, user, products, addToast } = useShop();
   const navigate = useNavigate();
 
   const [isMobile, setIsMobile] = useState(false);
+  const [openMenus, setOpenMenus] = useState({});
 
   const [state, setState] = useState({
     open: false,
@@ -349,6 +408,48 @@ const Navbar = () => {
     return NAVIGATION_CONFIG.user.filter(
       (item) => item.name !== "Login" && (!item.adminOnly || state.isAdmin)
     );
+  };
+
+  const getMobileMenuItems = () => {
+    const shopSubmenu = [];
+    Object.values(NAVIGATION_CONFIG.shop).forEach((section) => {
+      shopSubmenu.push(
+        ...section.items.map((subItem) => ({
+          title: subItem.name,
+          link: subItem.link,
+        }))
+      );
+    });
+
+    const mainItems = NAVIGATION_CONFIG.main.map((item) => {
+      if (item.name === "Shop") {
+        return {
+          title: item.name,
+          link: item.to,
+          submenu: shopSubmenu,
+        };
+      }
+      return {
+        title: item.name,
+        link: item.to,
+      };
+    });
+
+    const userItems = getMobileNavigationItems().map((item) => ({
+      title: item.name,
+      link: item.to,
+      action: item.name === "Logout" ? handleLogout : null,
+      icon: item.icon,
+    }));
+
+    return [...mainItems, ...userItems];
+  };
+
+  const toggleMenu = (title) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }));
   };
 
   useEffect(() => {
@@ -534,7 +635,7 @@ const Navbar = () => {
       >
         {/* Overlay */}
         <div
-          className={`fixed inset-0 bg-black/50 transition-opacity ${
+          className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ${
             state.isSidebarOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() =>
@@ -544,55 +645,34 @@ const Navbar = () => {
 
         {/* Sidebar Content */}
         <div
-          className={`absolute left-0 top-0 h-full w-80 max-w-full bg-white shadow-xl transition-transform duration-300 ${
+          className={`fixed inset-y-0 left-0 w-80 max-w-full bg-white shadow-xl transition-transform duration-300 ease-in-out ${
             state.isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="p-4 border-b border-gray-100">
+          <div className="flex items-center justify-between p-4 border-b border-gray-100">
+            <span className="text-sm font-medium">Menu</span>
             <button
-              className="size-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
               onClick={() =>
                 setState((prev) => ({ ...prev, isSidebarOpen: false }))
               }
+              className="p-2 hover:bg-gray-100 rounded-full"
             >
-              <CloseIcon />
+              <X className="h-5 w-5" />
             </button>
           </div>
 
-          <div className="overflow-y-auto h-[calc(100%-60px)]">
-            {/* Main Navigation */}
-            <nav className="px-4 py-6">
-              {NAVIGATION_CONFIG.main.map((item) => (
-                <NavLink
-                  key={item.name}
-                  to={item.to}
-                  className="block py-3 px-4 text-sm uppercase tracking-widest text-gray-600 hover:bg-gray-100 rounded-lg"
-                  onClick={() =>
-                    setState((prev) => ({ ...prev, isSidebarOpen: false }))
-                  }
-                >
-                  {item.name}
-                </NavLink>
-              ))}
-            </nav>
-
-            {/* User Navigation */}
-            <nav className="px-4 py-6 border-t border-gray-100">
-              {getMobileNavigationItems().map((item) => (
-                <NavLink
-                  key={item.name}
-                  to={item.to}
-                  className="flex items-center gap-3 py-3 px-4 text-sm uppercase tracking-widest text-gray-600 hover:bg-gray-100 rounded-lg"
-                  onClick={() => {
-                    if (item.name === "Logout") handleLogout();
-                    setState((prev) => ({ ...prev, isSidebarOpen: false }));
-                  }}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.name}
-                </NavLink>
-              ))}
-            </nav>
+          <div className="overflow-y-auto h-[calc(100%-64px)]">
+            {getMobileMenuItems().map((item, index) => (
+              <MenuItem
+                key={index}
+                item={item}
+                isOpen={openMenus[item.title]}
+                onToggle={() => toggleMenu(item.title)}
+                onClose={() =>
+                  setState((prev) => ({ ...prev, isSidebarOpen: false }))
+                }
+              />
+            ))}
           </div>
         </div>
       </div>
