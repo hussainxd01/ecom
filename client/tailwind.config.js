@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Geist", "sans-serif"],
+        sans: ["Geist", "Inter", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

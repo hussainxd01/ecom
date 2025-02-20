@@ -44,12 +44,12 @@ const FeaturedProducts = () => {
 
   return (
     <section className="container mx-auto px-4 md:px-24 py-16">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="sm:text-3xl text-xl font-base tracking-wide">
-          Featured Products
-        </h2>
+      <div className="flex items-center justify-between mb-8 py-5">
+        <h2 className="sm:text-5xl text-2xl font-thin">Featured Products</h2>
         <div className="flex sm:gap-2 gap-1 items-center justify-center">
-          <Link className="sm:text-sm text-xs hover:underline">Shop all</Link>
+          <Link className="sm:text-sm text-xs hover:underline" to={"/shop"}>
+            Shop all
+          </Link>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"

@@ -101,7 +101,6 @@ body {
   overflow: hidden !important;
   word-break: break-word; /* Ensures long text doesn’t overflow */
 }
-
 /* 
 * {
   border: 1px solid red;
