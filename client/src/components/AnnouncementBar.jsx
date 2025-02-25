@@ -20,7 +20,7 @@ const AnnouncementBar = () => {
   }, []);
 
   return (
-    <div className="bg-black text-white text-sm py-1 overflow-hidden relative">
+    <div className="bg-green text-white text-sm py-1 overflow-hidden relative">
       <div className="container mx-auto flex justify-center items-center h-6  tracking-wider">
         <AnimatePresence mode="wait">
           <motion.div
