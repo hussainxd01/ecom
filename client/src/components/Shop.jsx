@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
@@ -15,6 +15,10 @@ import Navbar from "./Navbar";
 import { useParams } from "react-router-dom";
 import Footer from "./Footer";
 import Breadcrumb from "./Breadcrumb";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Shop() {
   const { products, categories } = useContext(ShopContext);
@@ -27,17 +31,8 @@ export default function Shop() {
   const [sortBy, setSortBy] = useState("recommended");
   const [showFilters, setShowFilters] = useState(false);
   const { id } = useParams();
-  const handleFilterChange = (type, value) => {
-    setFilters((prev) => ({ ...prev, [type]: value }));
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      category: "",
-      priceRange: "",
-      search: "",
-    });
-  };
+  const productAnimationRef = useRef(null);
+  const filterPanelRef = useRef(null);
 
   useEffect(() => {
     let filtered = [...products];
@@ -78,13 +73,44 @@ export default function Shop() {
     setFilteredProducts(filtered);
   }, [products, filters, sortBy]);
 
+  useEffect(() => {
+    // Ensure product animation only runs once
+    if (productAnimationRef.current) {
+      productAnimationRef.current.kill();
+    }
+
+    productAnimationRef.current = gsap.fromTo(
+      ".product-card",
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: ".product-grid",
+          start: "top 80%",
+        },
+      }
+    );
+
+    return () => {
+      if (productAnimationRef.current) {
+        productAnimationRef.current.kill();
+      }
+    };
+  }, [filteredProducts]);
+
+  const handleFilterToggle = () => {
+    setShowFilters(!showFilters);
+  };
+
   return (
     <section className="bg-white min-h-screen">
       <Navbar />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header and Filters */}
-        <Breadcrumb />
-        <div className="mb-8">
+        <div className="mb-8 flex flex-col gap-5">
+          <Breadcrumb />
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4 sm:gap-0">
             <h1 className="text-xl font-normal uppercase tracking-widest">
               New Arrivals
@@ -93,10 +119,14 @@ export default function Shop() {
               <Button
                 variant="ghost"
                 className="font-normal uppercase text-xs tracking-widest w-full sm:w-auto border border-gray-200 hover:bg-gray-50"
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={handleFilterToggle}
               >
                 Filter and Sort
-                <ChevronDown className="ml-2 h-4 w-4" />
+                <ChevronDown
+                  className={`ml-2 h-4 w-4 transition-transform duration-300 ${
+                    showFilters ? "rotate-180" : ""
+                  }`}
+                />
               </Button>
               <div className="relative w-full sm:w-auto">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -104,19 +134,24 @@ export default function Shop() {
                   type="text"
                   placeholder="Search products"
                   value={filters.search}
-                  onChange={(e) => handleFilterChange("search", e.target.value)}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, search: e.target.value }))
+                  }
                   className="pl-10 bg-gray-100 border-none text-xs tracking-widest w-full"
                 />
               </div>
             </div>
           </div>
           {showFilters && (
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 border-t border-b gap-4 sm:gap-0">
-              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div
+              className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 border-t border-b gap-4 sm:gap-8 
+              transition-all duration-300 ease-in-out"
+            >
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 w-full sm:w-auto">
                 <Select
                   value={filters.category}
                   onValueChange={(value) =>
-                    handleFilterChange("category", value)
+                    setFilters((prev) => ({ ...prev, category: value }))
                   }
                 >
                   <SelectTrigger className="w-full sm:w-[180px] uppercase text-xs tracking-widest">
@@ -133,73 +168,71 @@ export default function Shop() {
                 <Select
                   value={filters.priceRange}
                   onValueChange={(value) =>
-                    handleFilterChange("priceRange", value)
+                    setFilters((prev) => ({ ...prev, priceRange: value }))
                   }
                 >
                   <SelectTrigger className="w-full sm:w-[180px] uppercase text-xs tracking-widest">
                     <SelectValue placeholder="Price Range" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0-1000">₹0 - ₹1000</SelectItem>
+                    <SelectItem value="0-500">₹0 - ₹500</SelectItem>
+                    <SelectItem value="500-1000">₹500 - ₹1000</SelectItem>
                     <SelectItem value="1000-2000">₹1000 - ₹2000</SelectItem>
-                    <SelectItem value="2000-5000">₹2000 - ₹5000</SelectItem>
-                    <SelectItem value="5000-10000">₹5000+</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 w-full sm:w-auto">
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-full sm:w-[180px] uppercase text-xs tracking-widest">
-                    <SelectValue placeholder="Sort by" />
+                    <SelectValue placeholder="Sort By" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="recommended">Recommended</SelectItem>
-                    <SelectItem value="newest">Newest</SelectItem>
                     <SelectItem value="price-low-high">
                       Price: Low to High
                     </SelectItem>
                     <SelectItem value="price-high-low">
                       Price: High to Low
                     </SelectItem>
+                    <SelectItem value="newest">Newest</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button
-                  variant="ghost"
-                  onClick={clearFilters}
-                  className=" uppercase text-xs tracking-widest"
+                  variant="outline"
+                  onClick={() =>
+                    setFilters({ category: "", priceRange: "", search: "" })
+                  }
                 >
                   Clear All <X className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
           )}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 product-grid">
+            {filteredProducts.map((product) => (
+              <Link
+                key={product._id}
+                to={`/product/${product._id}`}
+                className="group cursor-pointer product-card"
+              >
+                <div className="aspect-w-1 aspect-h-1 sm:aspect-w-2 sm:aspect-h-3 mb-2 transition">
+                  <img
+                    src={product.images[0] || "/placeholder.svg"}
+                    alt={product.name}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <h3 className="text-xs font-normal truncate uppercase tracking-widest hover:underline">
+                  {product.name}
+                </h3>
+                <p className="text-sm text-gray-900">₹ {product.price}</p>
+              </Link>
+            ))}
+          </div>
+          {filteredProducts.length === 0 && (
+            <p className="text-center text-gray-500 mt-8">No products found.</p>
+          )}
         </div>
-
-        {/* Product Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {filteredProducts.map((product) => (
-            <Link
-              key={product._id}
-              to={`/product/${product._id}`}
-              className="group cursor-pointer"
-            >
-              <div className="aspect-w-1 aspect-h-1 sm:aspect-w-2 sm:aspect-h-3 mb-2">
-                <img
-                  src={product.images[0] || "/placeholder.svg"}
-                  alt={product.name}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <h3 className="text-xs font-normal truncate uppercase tracking-widest hover:underline">
-                {product.name}
-              </h3>
-              <p className="text-sm text-gray-900">₹ {product.price}</p>
-            </Link>
-          ))}
-        </div>
-        {filteredProducts.length === 0 && (
-          <p className="text-center text-gray-500 mt-8">No products found.</p>
-        )}
       </div>
       <Footer />
     </section>

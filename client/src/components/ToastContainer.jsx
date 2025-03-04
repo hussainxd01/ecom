@@ -1,11 +1,10 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
+import { X, AlertTriangle, CheckCircle, InfoIcon } from "lucide-react";
 
 const ToastContainer = ({ toasts, removeToast }) => {
   return (
-    <div className="fixed top-4 right-4 space-y-4 z-50 font-sans">
+    <div className="fixed top-4 right-4 space-y-2 z-50">
       {toasts.map((toast) => (
         <Toast key={toast.id} toast={toast} removeToast={removeToast} />
       ))}
@@ -31,53 +30,54 @@ const Toast = ({ toast, removeToast }) => {
   };
 
   const variants = {
-    success: {
-      icon: <CheckCircle className="w-5 h-5 text-green-500" />,
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200",
-      textColor: "text-green-800",
+    alert: {
+      icon: <AlertTriangle className="w-5 h-5 text-red-600" />,
+      className: "border-red-500 text-red-900 bg-white",
     },
-    error: {
-      icon: <AlertCircle className="w-5 h-5 text-red-500" />,
-      bgColor: "bg-red-50",
-      borderColor: "border-red-200",
-      textColor: "text-red-800",
+    success: {
+      icon: <CheckCircle className="w-5 h-5 text-green-600" />,
+      className: "border-green-500 text-green-900 bg-white",
     },
     info: {
-      icon: <Info className="w-5 h-5 text-blue-500" />,
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200",
-      textColor: "text-blue-800",
+      icon: <InfoIcon className="w-5 h-5 text-blue-600" />,
+      className: "border-blue-500 text-blue-900 bg-white",
+    },
+    default: {
+      icon: <InfoIcon className="w-5 h-5 text-gray-600" />,
+      className: "border-black text-gray-900 bg-white",
     },
   };
 
-  const { icon, bgColor, borderColor, textColor } =
-    variants[toast.type] || variants.info;
+  const { icon, className } = variants[toast.type] || variants.default;
 
   return (
     <div
-      className={`${bgColor} ${borderColor} ${textColor} px-4 py-3 rounded-lg shadow-md w-80 transition-all duration-300 ease-in-out border ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
+      className={`
+        ${className}
+        border  
+        p-3 w-72 
+        transition-all duration-300 ease-in-out
+        shadow-sm
+        ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
+      `}
       role="alert"
     >
-      <div className="flex items-start space-x-3">
-        {/* Icon */}
+      <div className="flex items-center space-x-3">
         <div className="flex-shrink-0">{icon}</div>
 
-        {/* Text Content */}
-        <div className="w-auto min-w-[200px] flex-1">
-          <p className="text-sm font-medium truncate">{toast.title}</p>
-          <p className="mt-1 text-sm break-words">{toast.message}</p>
+        <div className="flex-1 mr-2">
+          <p className="text-sm font-medium line-clamp-1">{toast.title}</p>
+          <p className="text-xs opacity-70 mt-1 line-clamp-2 tracking-wide capitalize">
+            {toast.message}
+          </p>
         </div>
 
-        {/* Close Button */}
         <button
           onClick={handleClose}
-          className="text-gray-400 hover:text-gray-500 focus:outline-none"
+          className="text-current opacity-50 hover:opacity-80 focus:outline-none"
         >
           <span className="sr-only">Close</span>
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
       </div>
     </div>
