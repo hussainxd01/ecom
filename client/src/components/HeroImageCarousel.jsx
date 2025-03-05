@@ -1,67 +1,142 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
-const slides = [
-  {
-    image:
-      "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "The Genevieve",
-    subtitle: "Elevated styles with just a hint of saloon.",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "New Horizons",
-    subtitle: "Discover the latest trends for the season.",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=1625&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "Timeless Beauty",
-    subtitle: "Classic styles for a modern touch.",
-  },
-];
-
-const HeroImageCarousel = () => {
+const HeroImageCarousel = ({ slides = [] }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const slideRef = useRef(null);
+  const containerRef = useRef(null);
+
+  // Default slides if no data is passed
+  const defaultSlides = [
+    {
+      image: "https://example.com/slide1.jpg",
+      link: "/collection/summer",
+      title: "Summer Collection",
+    },
+    {
+      image: "https://example.com/slide2.jpg",
+      link: "/collection/winter",
+      title: "Winter Essentials",
+    },
+  ];
+
+  // Use passed slides or default
+  const carouselSlides = slides.length > 0 ? slides : defaultSlides;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    // Automatic slide change every 5 seconds
+    const slideInterval = setInterval(() => {
+      nextSlide();
     }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+
+    return () => clearInterval(slideInterval);
+  }, [currentSlide]);
+
+  useEffect(() => {
+    // GSAP animation for slide transitions
+    if (slideRef.current) {
+      gsap.fromTo(
+        slideRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+        }
+      );
+    }
+  }, [currentSlide]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) =>
+      prev === 0 ? carouselSlides.length - 1 : prev - 1
+    );
+  };
+
+  // Prevent context menu and drag
+  const handleImageProps = {
+    draggable: false,
+    onContextMenu: (e) => e.preventDefault(),
+  };
 
   return (
-    <div className="relative w-full h-[600px] overflow-hidden">
-      <AnimatePresence>
-        {slides.map((slide, index) =>
-          index === currentSlide ? (
-            <motion.div
+    <section
+      ref={containerRef}
+      className="relative w-full h-[90vh] overflow-hidden bg-black"
+    >
+      {carouselSlides.map(
+        (slide, index) =>
+          index === currentSlide && (
+            <div
               key={index}
-              initial={{ opacity: 0, scale: 1.02 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
+              ref={slideRef}
               className="absolute inset-0 w-full h-full"
             >
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover object-center"
+              {/* Background Image */}
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${slide.image})`,
+                  backgroundPosition: "center",
+                  filter: "brightness(0.8)",
+                }}
               />
-              <div className="absolute inset-0 bg-black/40 flex flex-col justify-end items-start text-white p-10">
-                <h2 className="text-4xl font-semibold">{slide.title}</h2>
-                <p className="mt-3 text-lg opacity-80">{slide.subtitle}</p>
-                <button className="mt-6 bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-200 transition-all">
-                  Explore Now
-                </button>
+
+              {/* Overlay Content */}
+              <div className="relative z-10 flex items-center justify-center h-full">
+                <div className="text-center text-white max-w-2xl px-4">
+                  <h1 className="text-4xl md:text-6xl font-light mb-6 tracking-wider uppercase">
+                    {slide.title}
+                  </h1>
+                  <a
+                    href={slide.link}
+                    className="inline-block border border-white px-8 py-3 text-sm tracking-wider uppercase hover:bg-white hover:text-black transition-all duration-300"
+                  >
+                    Shop Now
+                  </a>
+                </div>
               </div>
-            </motion.div>
-          ) : null
-        )}
-      </AnimatePresence>
-    </div>
+            </div>
+          )
+      )}
+
+      {/* Navigation Dots */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {carouselSlides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`
+              w-2 h-2 rounded-full transition-all duration-300
+              ${
+                index === currentSlide
+                  ? "bg-white scale-125"
+                  : "bg-white/50 hover:bg-white/75"
+              }
+            `}
+          />
+        ))}
+      </div>
+
+      {/* Optional Navigation Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-2xl opacity-50 hover:opacity-100 transition-opacity"
+      >
+        ←
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-2xl opacity-50 hover:opacity-100 transition-opacity"
+      >
+        →
+      </button>
+    </section>
   );
 };
 

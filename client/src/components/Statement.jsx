@@ -45,34 +45,32 @@ const Statement = () => {
   }, []);
 
   return (
-    <div className="w-full min-h-screen flex items-center bg-gray-50">
+    <div className="w-full min-h-screen flex items-center bg-gray-50 py-16">
       <div className="max-w-5xl mx-auto px-6 lg:px-8">
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-none tracking-tight space-y-4">
           <span
             ref={(el) => (textRefs.current[0] = el)}
-            className="block opacity-0"
+            className="block opacity-0 leading-tight"
           >
             Because real style
           </span>
-          <br className="hidden sm:block" />
           <span
             ref={(el) => (textRefs.current[1] = el)}
-            className="block opacity-0"
+            className="block opacity-0 leading-tight"
           >
             doesn't need to shout—
           </span>
-          <br className="hidden sm:block" />
           <span
             ref={(el) => (textRefs.current[2] = el)}
-            className="block text-gray-700 opacity-0"
+            className="block text-gray-700 opacity-0 leading-tight"
           >
             it just fits, perfectly.
           </span>
         </h1>
-        <Link to={"/shop"}>
+        <Link to={"/shop"} className="block mt-8">
           <button
             ref={buttonRef}
-            className="mt-12 px-8 py-4 bg-gray-900 text-white text-lg font-semibold hover:bg-gray-800 transition-colors duration-300 ease-in-out opacity-0"
+            className="px-8 py-4 bg-gray-900 text-white text-lg font-semibold hover:bg-gray-800 transition-colors duration-300 ease-in-out opacity-0"
           >
             Discover Your Style
           </button>

@@ -45,7 +45,6 @@ const ProductDetail = () => {
       setError("Please select a size");
       return;
     }
-
     try {
       addToCart({
         userId: user.id,

@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import Newsletter from "../components/Newsletter";
 import Statement from "../components/Statement";
 import AnnouncementBar from "../components/AnnouncementBar";
+import ShopByCategory from "../components/ShopByCategory";
 const Homepage = () => {
   return (
     <section>
@@ -19,6 +20,7 @@ const Homepage = () => {
         <HeroImageCarousel />
       </div>
       <Statement />
+      <ShopByCategory />
       <FeaturedProduct />
       <Newsletter />
       <Footer />
