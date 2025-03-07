@@ -42,41 +42,33 @@ const ShopByCategory = () => {
   ];
 
   useEffect(() => {
-    // Performance optimization: batch animations
+    // Simple fade-in animation on first appearance only
     const ctx = gsap.context(() => {
       categoriesRef.current.forEach((cardRef, index) => {
-        // Use quickTo for better performance
-        const quickOpacity = gsap.quickTo(cardRef, "opacity", {
-          ease: "power2.out",
-          duration: 0.4,
-        });
-        const quickY = gsap.quickTo(cardRef, "y", {
-          ease: "power2.out",
-          duration: 0.4,
+        // Set initial state
+        gsap.set(cardRef, {
+          opacity: 0,
+          y: 30,
+          scale: 0.95,
         });
 
+        // Create the animation that runs once
         ScrollTrigger.create({
           trigger: cardRef,
-          start: "top 80%",
+          start: "top 90%", // Trigger earlier in the viewport
+          once: true, // Only trigger once
           onEnter: () => {
-            quickOpacity(1);
-            quickY(0);
-            cardRef.style.transform = "scale(1)";
-          },
-          onLeave: () => {
-            quickOpacity(0);
-            quickY(50);
-            cardRef.style.transform = "scale(0.95)";
-          },
-          onEnterBack: () => {
-            quickOpacity(1);
-            quickY(0);
-            cardRef.style.transform = "scale(1)";
-          },
-          onLeaveBack: () => {
-            quickOpacity(0);
-            quickY(50);
-            cardRef.style.transform = "scale(0.95)";
+            gsap.to(cardRef, {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.6,
+              ease: "power2.out",
+              stagger: {
+                amount: 0.2,
+                from: "start",
+              },
+            });
           },
         });
       });
@@ -101,11 +93,6 @@ const ShopByCategory = () => {
             key={category.id}
             href={category.link}
             ref={(el) => (categoriesRef.current[index] = el)}
-            style={{
-              opacity: 0,
-              transform: "translateY(50px) scale(0.95)",
-              willChange: "opacity, transform",
-            }}
             className="group block relative overflow-hidden"
           >
             <div className="aspect-[3/4] overflow-hidden">
