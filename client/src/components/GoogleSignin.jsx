@@ -81,7 +81,7 @@ const GoogleSignIn = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-5">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
         {/* Loading bar */}
         {isLoading && (
