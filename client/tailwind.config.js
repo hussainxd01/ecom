@@ -10,6 +10,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        loading: "loading 1.5s infinite ease-in-out",
+      },
+      keyframes: {
+        loading: {
+          "0%": { transform: "translateX(-100%)" },
+          "50%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+      },
       fontFamily: {
         sans: ["Geist", "Inter", "sans-serif"],
       },
