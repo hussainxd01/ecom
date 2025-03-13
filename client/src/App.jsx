@@ -17,7 +17,6 @@ import TermsAndConditions from "./components/TermsAndCondition";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import NewsletterPopup from "./components/NewsletterPopup";
 import ContactUs from "./components/ContactUs";
-import GoogleSignin from "./components/GoogleSignin";
 const App = () => {
   return (
     <div className="font-sans overflow-x-hidden">
@@ -39,7 +38,6 @@ const App = () => {
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contact-us" element={<ContactUs />} />
-        <Route path="/google-signin" element={<GoogleSignin />} />
       </Routes>
       <NewsletterPopup />
     </div>
