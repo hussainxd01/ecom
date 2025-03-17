@@ -2,6 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import productRoute from "./routes/product.route.js";
 import categoryRoute from "./routes/category.route.js";
 import userRoute from "./routes/user.route.js";
@@ -34,6 +37,35 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "user_images",
+    format: "png",
+    public_id: (req, file) => `user_${Date.now()}`,
+  },
+});
+
+const upload = multer({ storage });
+
+// API Route to Upload Image
+app.post("/upload", upload.single("image"), (req, res) => {
+  console.log("File received:", req.file); // Debugging
+
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+  res.json({
+    message: "Image uploaded successfully",
+    url: req.file.path, // Cloudinary URL
+  });
+});
 
 // Routes
 app.use("/api/products", productRoute);

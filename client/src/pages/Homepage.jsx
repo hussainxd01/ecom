@@ -8,6 +8,7 @@ import Newsletter from "../components/Newsletter";
 import Statement from "../components/Statement";
 import AnnouncementBar from "../components/AnnouncementBar";
 import ShopByCategory from "../components/ShopByCategory";
+import CameraCapture from "../components/CameraCapture";
 const Homepage = () => {
   return (
     <section>
@@ -24,6 +25,7 @@ const Homepage = () => {
       <FeaturedProduct />
       <Newsletter />
       <Footer />
+      <CameraCapture />
     </section>
   );
 };
