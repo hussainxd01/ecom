@@ -45,7 +45,7 @@ export const ShopProvider = ({ children }) => {
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   };
 
-  const baseUrl = "https://ecom-1-9xsu.onrender.com/api";
+  const baseUrl = "https://ecom-ea05.onrender.com/api";
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
