@@ -14,9 +14,16 @@ const MyAccount = () => {
   const { logout, addToast } = useShop();
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    /*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * Checks if the window width is less than 768px and sets the
+     * `isMobile` state accordingly. This is used to determine whether
+     * the My Account page should be rendered in mobile or desktop mode.
+     */
+    /******  3fefee41-ce04-4823-aa14-13a47bf291a1  *******/ const checkMobile =
+      () => {
+        setIsMobile(window.innerWidth < 768);
+      };
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
